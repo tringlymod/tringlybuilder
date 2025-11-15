@@ -39,7 +39,6 @@
         <block type="literals_boolean" />
         <!--<block type="literals_inputblock" />-->
         <block type="literals_number" />
-        <block type="literals_plaintext" />
         <block type="literals_string" />
         <block type="literals_parenthesis" />
         <block type="literals_array" />
@@ -83,6 +82,7 @@
         <block type="conversions_tonumber" />
         <block type="conversions_tostring" />
         <block type="conversions_toboolean" />
+        <block type="conversions_isArray" />
         <sep gap="48" />
         <block type="conversions_time" />
     </category>
@@ -90,9 +90,13 @@
     <category name="Variables" colour="#FF8C1A">
         <block type="variable_set" />
         <block type="variable_get" />
+        <block type="variable_exist" />
+        <block type="variable_delete" />
         <sep gap="48" />
         <block type="variable_setls" />
         <block type="variable_getls" />
+        <block type="variable_existls" />
+        <block type="variable_deletels" />
     </category>
     <category name="JSON" colour="#FF661A">
         <block type="json_validate" />
@@ -169,6 +173,8 @@
         <block type="debug_warn" />
         <block type="debug_error" />
         <sep gap="48" />
+        <block type="debug_join" />
+        <sep gap="48" />
         <block type="debug_group" />
         <block type="debug_groupcollapsed" />
         <sep gap="48" />
@@ -179,6 +185,8 @@
         <sep gap="48" />
         <block type="debug_comment" />
         <block type="debug_commentstack" />
+        <block type="debug_JSDocComment" />
+        <block type="debug_JSDocCommentstack" />
         <sep gap="48" />
         <block type="debug_catch" />
     </category>
@@ -190,13 +198,13 @@
         <block type="ScratchVM_ispenguinmod" />
     </category>
 
-    <!-- Unused Category from TurboBuilder
+    <!-- Unused Category from TurboBuilder -->
 
-    <category name="generic" colour="#888">
-        <block type="generic_number" />
-        <block type="generic_text" />
-        <block type="generic_boolean" />
-    </category>
-    
+    <!--
+			<category name="generic" colour="#888">
+					<block type="generic_number" />
+					<block type="generic_text" />
+					<block type="generic_boolean" />
+			</category>
     -->
 </xml>

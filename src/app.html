@@ -4,13 +4,18 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<title>TurboBuilder - Make extensions with blocks</title>
-    	<meta name="description" content="Create TurboWarp extensions using Scratch-like block coding." />
-    	<meta name="keywords" content="turbowarp, extensions, blocks" />
-    	<meta name="author" content="JeremyGamer13" />
-    	<meta name="theme-color" content="#ff4b4b" />
-    	<meta name="og:image" content="/favicon.png" />
+		<meta
+			name="description"
+			content="Create TurboWarp extensions using Scratch-like block coding."
+		/>
+		<meta name="keywords" content="turbowarp, extensions, blocks" />
+		<meta name="author" content="JeremyGamer13" />
+		<meta name="theme-color" content="#ff4b4b" />
+		<meta name="og:image" content="/favicon.png" />
 		<meta name="viewport" content="width=device-width" />
-		<style id="XTI0GZwZotMzDMi0wcGctLFttIWctMdtLPXI9M0aGGDQyMHRpMViW3E="></style>
+		<style
+			id="XTI0GZwZotMzDMi0wcGctLFttIWctMdtLPXI9M0aGGDQyMHRpMViW3E="
+		></style>
 		<style>
 			*:not(code, .token) {
 				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -43,11 +48,11 @@
 				font-size: 10px !important;
 				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 				padding: 0 8px;
-				color: #575E75 !important;
+				color: #575e75 !important;
 			}
 			.blocklyScrollbarHandle {
 				opacity: 0.5;
-				fill: #575E75;
+				fill: #575e75;
 			}
 			body.light .blocklyScrollbarHandle:hover {
 				fill: #454a5c;
@@ -108,13 +113,30 @@
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
-		<div class="__alert_prompt" id="Zm5BSEgzQW5HeW9yZkFkNEhpbGJiamtpZmdoOGNDc2lMR29JSzF0K2JnPT0=">
-			<p style="margin-block: 0;">TringlyBuilder is currently in development, some project files may break due to code changing all the time.<br><br>website by: <a href="https://github.com/Tringlyman">Tringlyman</a><br>fork of <a href="https://TurboBuilder.vercel.app">TurboBuilder</a> by <a href="https://github.com/Jwklong">Jwklong</a></p>
+		<div
+			class="__alert_prompt"
+			id="Zm5BSEgzQW5HeW9yZkFkNEhpbGJiamtpZmdoOGNDc2lMR29JSzF0K2JnPT0="
+		>
+			<p style="margin-block: 0">
+				TringlyBuilder is currently in development, some project files may break
+				due to code changing all the time.<br /><br />website by:
+				<a href="https://github.com/Tringlyman">Tringlyman</a><br />fork of
+				<a href="https://TurboBuilder.vercel.app">TurboBuilder</a> by
+				<a href="https://github.com/Jwklong">Jwklong</a>
+			</p>
 			<button
-				style="margin: 0; margin-left: 8px; background: transparent; border: 0; outline: 0; padding: 0; cursor: pointer;"
+				style="
+					margin: 0;
+					margin-left: 8px;
+					background: transparent;
+					border: 0;
+					outline: 0;
+					padding: 0;
+					cursor: pointer;
+				"
 				onclick="document.getElementById('Zm5BSEgzQW5HeW9yZkFkNEhpbGJiamtpZmdoOGNDc2lMR29JSzF0K2JnPT0=').remove()"
 			>
-				<img width="24" height="24" src="/images/close.svg">
+				<img width="24" height="24" src="images/close.svg" />
 			</button>
 		</div>
 		<script>
@@ -124,21 +146,21 @@
 			// prism styles
 			const prismStyles = {
 				light: null,
-				dark: null
+				dark: null,
 			};
 			const getPrismStyleUrl_ = (id) => {
 				switch (id) {
-					case 'light':
-						return 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0/themes/prism.min.css'; 
-					case 'dark':
-						return 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0/themes/prism-tomorrow.min.css'; 
+					case "light":
+						return "https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0/themes/prism.min.css";
+					case "dark":
+						return "https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0/themes/prism-tomorrow.min.css";
 					default:
-						return ''; 
+						return "";
 				}
 			};
 			const loadPrismStyle_ = (id) => {
 				const url = getPrismStyleUrl_(id);
-				console.log('grabbing prism style for', id);
+				console.log("grabbing prism style for", id);
 				return fetch(url);
 			};
 
@@ -147,8 +169,8 @@
 			const body = document.body;
 			const updateTheme = async () => {
 				// update body
-				const mode = localStorage.getItem('tb:theme');
-				if (mode === 'dark') {
+				const mode = localStorage.getItem("tringlybuilder:theme");
+				if (mode === "dark") {
 					body.setAttribute("class", "dark");
 					body.style.background = "#111";
 				} else {
@@ -156,17 +178,19 @@
 					body.style.background = "";
 				}
 				// update head
-				const styleElement = document.getElementById("XTI0GZwZotMzDMi0wcGctLFttIWctMdtLPXI9M0aGGDQyMHRpMViW3E=");
+				const styleElement = document.getElementById(
+					"XTI0GZwZotMzDMi0wcGctLFttIWctMdtLPXI9M0aGGDQyMHRpMViW3E="
+				);
 				let promise;
-				let styleCode = '';
-				let styleId = 'dark';
-				if (mode === 'dark') {
+				let styleCode = "";
+				let styleId = "dark";
+				if (mode === "dark") {
 					styleCode = prismStyles.dark;
-					if (!prismStyles.dark) promise = loadPrismStyle_('dark');
+					if (!prismStyles.dark) promise = loadPrismStyle_("dark");
 				} else {
-					styleId = 'light';
+					styleId = "light";
 					styleCode = prismStyles.light;
-					if (!prismStyles.light) promise = loadPrismStyle_('light');
+					if (!prismStyles.light) promise = loadPrismStyle_("light");
 				}
 				if (promise) {
 					const res = await promise;
@@ -180,7 +204,7 @@
 			window.themeUpdated_ = () => {
 				updateTheme();
 				for (const event in window.tbevents_) {
-					if (event.type === 'THEME') {
+					if (event.type === "THEME") {
 						event.callback();
 					}
 				}

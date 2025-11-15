@@ -9,6 +9,7 @@
 
     // Modals
     import ExtensionColorsModal from "$lib/MenuModals/ExtensionColors.svelte";
+    import { default as ExtensionInfoModal } from "$lib/MenuModals/ExtensionInfo.svelte";
     import CreateBlockModal from "$lib/MenuModals/CreateBlock.svelte";
 
     // Modal Scripts
@@ -24,7 +25,7 @@
     import fileDialog from "../resources/fileDialog";
     import EventManager from "../resources/events";
 
-    import Blockly from "blockly/core";
+    import Blockly, { clipboard } from "blockly/core";
     import * as ContinuousToolboxPlugin from "@blockly/continuous-toolbox";
     import "@blockly/field-colour-hsv-sliders";
 
@@ -153,6 +154,7 @@
 
     let workspace;
     let compiler;
+    let projectFileName = "";
     let projectName = "";
     let projectID = "";
     let lastGeneratedCode = "";
@@ -175,21 +177,21 @@
         id: "extensionID",
         name: "Extension",
         docsURL: "",
-        color1: "#0088ff",
-        color2: "#0063ba",
-        color3: "",
-        tbShow: true
+        color1: "#0FBD8C",
+        color2: '#0DA57A',
+        color3: "#0B8E69",
+
+        /* extension Gallery uses these */
+        description: "an extension made with Tringlybuilder",
+        by: "BY <https://www.example.com?author=by>",
+        original: "ORIGINAL <https://www.example.com?author=original>",
+        license: "MIT",
+
+        /* it's only purpose is to give a unique name to the files downloaded */
+        fileName: "Extension",
     };
 
     function updateGeneratedCode() {
-        extensionMetadata.name = "Extension";
-        extensionMetadata.id = "extensionID";
-        if (projectName) {
-            extensionMetadata.name = projectName;
-        }
-        if (projectID) {
-            extensionMetadata.id = projectID;
-        }
         const code = compiler.compile(
             workspace,
             extensionMetadata,
@@ -199,6 +201,7 @@
     }
 
     import pkg from '@blockly/workspace-minimap';
+  import { writable } from "svelte/store";
     const { PositionedMinimap } = pkg;
     onMount(() => {
         console.log("ignore the warnings above we dont care about those");
@@ -219,10 +222,10 @@
 
     function downloadProject() {
         // generate file name
-        let filteredProjectName = (projectName || projectID).replace(/[^a-z0-9\-]+/gim, "_");
-        let fileName = filteredProjectName + ".tb";
+        let filteredProjectName = (extensionMetadata.fileName ?? extensionMetadata.name ?? extensionMetadata.id).replace(/[^a-z0-9\-]+/gim, "_");
+        let fileName = filteredProjectName + ".tringlybuilder";
         if (!filteredProjectName) {
-            fileName = "MyProject.tb";
+            fileName = "MyProject.tringlybuilder";
         }
 
         // data
@@ -253,11 +256,9 @@
         });
     }
     function loadProject() {
-        fileDialog({ accept: ".tb" }).then((files) => {
+        fileDialog({ accept: ".tringlybuilder" }).then((files) => {
             if (!files) return;
             const file = files[0];
-
-            const projectNameIdx = file.name.lastIndexOf(".tb");
 
             JSZip.loadAsync(file.arrayBuffer()).then(async (zip) => {
                 console.log("loaded zip file...");
@@ -270,6 +271,7 @@
                 const projectJson = JSON.parse(projectJsonString);
 
                 // do your thing
+                projectFileName = projectJson.metadata.fileName
                 projectName = projectJson.metadata.name
                 projectID = projectJson.metadata.id
                 for (var i in projectJson.metadata) {
@@ -375,6 +377,7 @@
 
     // Modals
     const ModalState = {
+        extensionInfo: false,
         extensionColors: false,
     };
 
@@ -383,6 +386,45 @@
         alert("no discord server avaible yet")
     }
 </script>
+
+
+{#if ModalState.extensionInfo}
+    <ExtensionInfoModal
+        fileName={extensionMetadata.fileName}
+        id={extensionMetadata.id}
+        name={extensionMetadata.name}
+        description={extensionMetadata.description}
+        by={extensionMetadata.by}
+        original={extensionMetadata.original}
+        license={extensionMetadata.license}
+        on:completed={(info) => {
+
+            ModalState.extensionInfo = false;
+
+            extensionMetadata.fileName = info.detail.fileName;
+            extensionMetadata.id = info.detail.id;
+            extensionMetadata.name = info.detail.name;
+            extensionMetadata.description = info.detail.description;
+            extensionMetadata.by = info.detail.by;
+            extensionMetadata.original = info.detail.original;
+            extensionMetadata.license = info.detail.license;
+
+            /* used to replace the preview icon's name */
+            projectName = info.detail.name;
+
+            updateGeneratedCode();
+        }}
+        on:cancel={() => {
+            ModalState.extensionInfo = false;
+            updateGeneratedCode();
+        }}
+    />
+{/if}
+{#if isExtensionIDInvalid(projectID)}
+    <p style="color:white;margin-left:4px">
+        <b>Extension ID must be only letters and numbers.</b>
+    </p>
+{/if}
 
 <CreateBlockModal
     color1={extensionMetadata.color1}
@@ -415,29 +457,6 @@
     <NavigationButton on:click={downloadProject}>Save</NavigationButton>
     <NavigationButton on:click={loadProject}>Load</NavigationButton>
     <NavigationDivider />
-    <input
-        class="project-name"
-        type="text"
-        placeholder="Extension ID (ex: extensionID)"
-        style="margin-left:4px;margin-right:4px"
-        data-invalid={isExtensionIDInvalid(projectID)}
-        bind:value={projectID}
-        on:change={updateGeneratedCode}
-    />
-    {#if isExtensionIDInvalid(projectID)}
-        <p style="color:white;margin-left:4px">
-            <b>Extension ID must be only letters and numbers.</b>
-        </p>
-    {/if}
-    <NavigationDivider />
-    <input
-        class="project-name"
-        type="text"
-        placeholder="Extension Name (ex: Extension)"
-        style="margin-left:4px;margin-right:4px"
-        bind:value={projectName}
-        on:change={updateGeneratedCode}
-    />
 </NavigationBar>
 <div class="main">
     <div class="row-menus">
@@ -481,6 +500,14 @@
                         </div>
                     </div>
                 </div>
+                <div style="margin-left:8px" />
+                <StyledButton
+                    on:click={() => {
+                        ModalState.extensionInfo = true;
+                    }}
+                >
+                    Edit Extension Info
+                </StyledButton>
             </div>
             <div class="blocklyWrapper">
                 <BlocklyComponent {config} locale={en} bind:workspace />
@@ -564,7 +591,7 @@
                             // download
                             const code =
                                 beautifyGeneratedCode(lastGeneratedCode);
-                            const filteredProjectName = projectName.replace(
+                            const filteredProjectName = (projectFileName ? projectFileName : projectName ? projectName : projectID).replace(
                                 /[^a-z0-9\-]+/gim,
                                 "_"
                             );
@@ -618,16 +645,7 @@
     }
 
     :global(body.dark) input[type="text"],
-    :global(body.dark) input[type="number"] {
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.7);
-        color: white;
-    }
     :global(body.dark) input[type="text"]:hover,
-    :global(body.dark) input[type="number"]:hover {
-        background: transparent;
-        border: 1px solid dodgerblue;
-    }
 
     .main {
         position: absolute;
@@ -637,51 +655,6 @@
         height: calc(100% - var(--nav-height));
 
         min-width: 870px;
-    }
-
-    .project-name {
-        width: 236px;
-
-        font-size: 20px;
-
-        border-radius: 6px;
-        outline: 1px dashed rgba(0, 0, 0, 0.15);
-        border: 0;
-        background: rgba(255, 255, 255, 0.25);
-        color: white;
-
-        font-weight: bold;
-        font-size: 1rem;
-        padding: 0.5rem;
-        transition: 0.25s;
-    }
-    .project-name::placeholder {
-        font-weight: normal;
-        color: white;
-        opacity: 1;
-        font-style: italic;
-    }
-    .project-name:hover {
-        background-color: hsla(0, 100%, 100%, 0.5);
-        transition: 0.25s;
-    }
-    .project-name:active,
-    .project-name:focus {
-        outline: none;
-        border: 1px solid hsla(0, 100%, 100%, 0);
-        box-shadow: 0 0 0 calc(0.5rem * 0.5) hsla(0, 100%, 100%, 0.25);
-        background-color: hsla(0, 100%, 100%, 1);
-        color: black;
-        transition: 0.25s;
-    }
-
-    .project-name[data-invalid="true"] {
-        background-color: #ffabab;
-        text-decoration: red underline;
-    }
-    :global(body.dark) .project-name[data-invalid="true"] {
-        background-color: #9b0000 !important;
-        text-decoration: red underline;
     }
 
     .extensionIcon {

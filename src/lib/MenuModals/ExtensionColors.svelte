@@ -4,9 +4,10 @@
 
     import colorExample from "./extensionColorExample.svg?raw";
 
-    export let color1 = "#ff0000";
-    export let color2 = "#00ff00";
-    export let color3 = "#0000ff";
+    const colors = ["#0FBD8C", "#0DA57A", "#0B8E69"];
+    export let color1 = colors[0];
+    export let color2 = colors[1];
+    export let color3 = colors[2];
 
     let color3Included = false;
     export let tbShow = true;
@@ -16,10 +17,10 @@
     function event() {
         console.log(color3Included);
         if (!color3Included) {
-            color3 = "";
+            color3 = colors[2];
         }
         if (color3Included && !color3) {
-            color3 = "#000000";
+            color3 = colors[2];
         }
         dispatch("completed", {
             color1,
@@ -35,7 +36,7 @@
     function getExampleData(color1, color2, color3, color3Included) {
         const tokens = ["[{{COLOR1}}]", "[{{COLOR2}}]", "[{{COLOR3}}]"];
         if (color3Included && !color3) {
-            color3 = "#000000";
+            color3 = colors[2];
         }
         if (!color3 || !color3Included) {
             const rgb = ColorUtil.hexToRGB(color1);
@@ -94,10 +95,6 @@
                 <div
                     style="display:flex;flex-direction:row;align-items:center;"
                 >
-                    <label>
-                        TringlyBuilder Indicator ([unimplemented] PenguinMod Experimental Feature)
-                        <input type="checkbox" bind:checked={tbShow} />
-                    </label>
                 </div>
                 <div
                     style="display:flex;flex-direction:row;align-items:center;"
@@ -108,13 +105,6 @@
                                 class="extensionBubbleIcon"
                                 style={`background: ${color1}; border-color: ${color2}`}
                             >
-                                {#if tbShow}
-                                    <img
-                                        class="tbBubbleIcon"
-                                        src="favicon.png"
-                                        alt="TringlyBuilder"
-                                    />
-                                {/if}
                             </div>
                             <div class="extensionBubbleName">Extension</div>
                         </div>
@@ -276,17 +266,6 @@
     .extensionMenuPreview:focus,
     .extensionMenuPreview:active {
         background-color: #e9eef2;
-    }
-
-    .tbBubbleIcon {
-        width: 16px;
-        height: 16px;
-        background: #0006;
-        backdrop-filter: blur(2px);
-        border-radius: 8px;
-        position: absolute;
-        top: -3px;
-        right: -3px;
     }
 
     :global(body.dark) .extensionMenuPreview {

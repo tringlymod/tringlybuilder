@@ -3,7 +3,7 @@
     import Divider from "$lib/NavigationBar/Divider.svelte";
 
     const switchTheme = () => {
-        const id = "tb:theme";
+        const id = "tringlybuilder:theme";
         const currentData = localStorage.getItem(id);
         if (currentData === "dark") {
             localStorage.setItem(id, "");

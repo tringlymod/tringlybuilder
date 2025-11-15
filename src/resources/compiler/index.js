@@ -1,5 +1,4 @@
-import javascriptGenerator from '../javascriptGenerator';
-
+import javascriptGenerator from "../javascriptGenerator";
 const start = `
 if (!Scratch.extensions.unsandboxed) {
   alert("This extension needs to be unsandboxed to run!")
@@ -125,84 +124,116 @@ const playSound = async (url, target) => {
 };
 
 playSound(ab, cd)
-}`
+}`;
 
 class Compiler {
-    /**
-     * Generates JavaScript code from the provided workspace & info.
-     * @param {Blockly.Workspace} workspace 
-     * @param {object} extensionMetadata 
-     * @param {object} imageStates 
-     * @returns {string} Generated code.
-     */
+	/**
+	 * Generates JavaScript code from the provided workspace & info.
+	 * @param {Blockly.Workspace} workspace
+	 * @param {object} extensionMetadata
+	 * @param {object} imageStates
+	 * @returns {string} Generated code.
+	 */
 
-    compile(workspace, extensionMetadata, imageStates) {
-        const code = javascriptGenerator.workspaceToCode(workspace);
-        
-        const headerCode = [
-            `/*`,
-            `   This extension was made with TurboBuilder!`,
-            `   ${location.origin}`,
-            `*/`,
-            `(async function (Scratch) {`,
-            `const variables = {};`,
-            `const blocks = [];`,
-            `const menus = {};`,
-            ``,
-            start
-        ];
-        const classRegistry = {
-            top: [
-                `class Extension {`
-            ],
-            extensionInfo: {},
-            bottom: [
-                `}`
-            ]
-        }
-        const footerCode = [
-            `Scratch.extensions.register(new Extension());`,
-            `})(Scratch);`
-        ];
+	compile(workspace, extensionMetadata, imageStates) {
+		const code = javascriptGenerator.workspaceToCode(workspace);
 
-        if (imageStates) {
-            if (imageStates.icon.image) {
-                // add icon uri
-                const url = imageStates.icon.image;
-                classRegistry.extensionInfo.blockIconURI = url;
-            }
-            if (imageStates.menuicon.image) {
-                // add icon uri
-                const url = imageStates.menuicon.image;
-                classRegistry.extensionInfo.menuIconURI = url;
-            }
-        }
-        if (extensionMetadata) {
-            classRegistry.extensionInfo.id = extensionMetadata.id;
-            classRegistry.extensionInfo.name = extensionMetadata.name;
-            if (extensionMetadata.docsURL) {
-                classRegistry.extensionInfo.docsURI = extensionMetadata.docsURL;
-            }
-            if (extensionMetadata.color1) {
-                classRegistry.extensionInfo.color1 = extensionMetadata.color1;
-            }
-            if (extensionMetadata.color2) {
-                classRegistry.extensionInfo.color2 = extensionMetadata.color2;
-            }
-            if (extensionMetadata.color3) {
-                classRegistry.extensionInfo.color3 = extensionMetadata.color3;
-            }
-            if (extensionMetadata.tbShow) {
-                classRegistry.extensionInfo.tbShow = extensionMetadata.tbShow;
-            }
-        }
+		const headerCode = [
+			`// id: ${extensionMetadata.id}`,
+			`// name: ${extensionMetadata.name}`,
+			`// description: ${extensionMetadata.description}`,
+			`// by: ${extensionMetadata.by}`,
+			`// original: ${extensionMetadata.original}`,
+			`// license: ${extensionMetadata.license}`,
+			`/*`,
+			`   This extension was made with TurboBuilder!`,
+			`   ${location.origin}`,
+			`*/`,
+			`(async function (Scratch) {`,
+			`const variables = {};`,
+			`const blocks = [];`,
+			`const menus = {};`,
+			``,
+			start,
+		];
+		const classRegistry = {
+			top: [`class Extension {`],
+			extensionInfo: {},
+			bottom: [`}`],
+		};
+		const footerCode = [
+			`Scratch.extensions.register(new Extension());`,
+			`})(Scratch);`,
+		];
 
-        return [].concat(headerCode, classRegistry.top, [
-            `getInfo() {`,
-            `return ${JSON.stringify(classRegistry.extensionInfo).substring(0, JSON.stringify(classRegistry.extensionInfo).length - 1) + ', "blocks": blocks,\n"menus": menus }'}`,
-            `}`,
-        ], classRegistry.bottom, code, footerCode).join('\n');
-    }
+		if (imageStates) {
+			if (imageStates.icon.image) {
+				// add icon uri
+				const url = imageStates.icon.image;
+				classRegistry.extensionInfo.blockIconURI = url;
+			}
+			if (imageStates.menuicon.image) {
+				// add icon uri
+				const url = imageStates.menuicon.image;
+				classRegistry.extensionInfo.menuIconURI = url;
+			}
+		}
+		if (extensionMetadata) {
+			classRegistry.extensionInfo.id = extensionMetadata.id;
+			classRegistry.extensionInfo.name = extensionMetadata.name;
+			if (extensionMetadata.docsURL) {
+				classRegistry.extensionInfo.docsURI = extensionMetadata.docsURL;
+			}
+			if (extensionMetadata.color1) {
+				classRegistry.extensionInfo.color1 = extensionMetadata.color1;
+			}
+			if (extensionMetadata.color2) {
+				classRegistry.extensionInfo.color2 = extensionMetadata.color2;
+			}
+			if (extensionMetadata.color3) {
+				classRegistry.extensionInfo.color3 = extensionMetadata.color3;
+			}
+			const colors = ["#0FBD8C", "#0DA57A", "#0B8E69"];
+			if (
+				extensionMetadata.color1.toLocaleLowerCase() ===
+				colors[0].toLocaleLowerCase()
+			) {
+				delete classRegistry.extensionInfo.color1;
+			}
+			if (
+				extensionMetadata.color2.toLocaleLowerCase() ===
+				colors[1].toLocaleLowerCase()
+			) {
+				delete classRegistry.extensionInfo.color2;
+			}
+			if (
+				extensionMetadata.color3.toLocaleLowerCase() ===
+				colors[2].toLocaleLowerCase()
+			) {
+				delete classRegistry.extensionInfo.color3;
+			}
+		}
+
+		return []
+			.concat(
+				headerCode,
+				classRegistry.top,
+				[
+					`getInfo() {`,
+					`return ${
+						JSON.stringify(classRegistry.extensionInfo).substring(
+							0,
+							JSON.stringify(classRegistry.extensionInfo).length - 1
+						) + ', "blocks": blocks,\n"menus": menus }'
+					}`,
+					`}`,
+				],
+				classRegistry.bottom,
+				code,
+				footerCode
+			)
+			.join("\n");
+	}
 }
 
 export default Compiler;
