@@ -250,7 +250,7 @@ function register() {
 				"Y",
 				javascriptGenerator.ORDER_ATOMIC
 			);
-			return [`${X || "[]"}[${Y || 0}]`, javascriptGenerator.ORDER_ATOMIC];
+			return [`${Y || "[]"}[${X || 0}]`, javascriptGenerator.ORDER_ATOMIC];
 		}
 	);
 
@@ -360,7 +360,7 @@ function register() {
 				"Y",
 				javascriptGenerator.ORDER_ATOMIC
 			);
-			return [`${X || "{}"}[${Y || 0}]`, javascriptGenerator.ORDER_ATOMIC];
+			return [`${Y || "{}"}[${X || 0}]`, javascriptGenerator.ORDER_ATOMIC];
 		}
 	);
 

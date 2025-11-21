@@ -10,12 +10,11 @@
     export let color3 = colors[2];
 
     let color3Included = false;
-    export let tbShow = true;
 
     const dispatch = createEventDispatcher();
 
     function event() {
-        console.log(color3Included);
+        
         if (!color3Included) {
             color3 = colors[2];
         }
@@ -26,7 +25,6 @@
             color1,
             color2,
             color3,
-            tbShow
         });
     }
     function cancel() {

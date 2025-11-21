@@ -181,13 +181,13 @@ function register() {
 	);
 }
 
-// Blockly.Extensions.register("single_character_validation", function () {
-// 	this.getField("KEY").setValidator(function (newValue) {
-// 		return newValue.substring(
-// 			Math.max(newValue.length - 1, 0),
-// 			newValue.length
-// 		);
-// 	});
-// });
+Blockly.Extensions.register("single_character_validation", function () {
+	this.getField("KEY").setValidator(function (newValue) {
+		return newValue.substring(
+			Math.max(newValue.length - 1, 0),
+			newValue.length
+		);
+	});
+});
 
 export default register;

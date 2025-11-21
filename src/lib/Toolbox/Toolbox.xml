@@ -86,7 +86,7 @@
         <sep gap="48" />
         <block type="conversions_time" />
     </category>
-    <sep></sep>
+    <sep />
     <category name="Variables" colour="#FF8C1A">
         <block type="variable_set" />
         <block type="variable_get" />
@@ -98,6 +98,7 @@
         <block type="variable_existls" />
         <block type="variable_deletels" />
     </category>
+    <sep />
     <category name="JSON" colour="#FF661A">
         <block type="json_validate" />
         <block type="json_tojson" />
@@ -117,6 +118,22 @@
         <block type="json_objectkeys" />
         <block type="json_objectvalues" />
     </category>
+    <category name="JSON builder" colour="#FF661A">
+        <block type="jsonBuilder_array_builder" />
+        <block type="jsonBuilder_array_append" />
+        <block type="jsonBuilder_array_setBuilder" />
+
+        <sep gap="48" />
+
+        <block type="jsonBuilder_object_builder" />
+        <block type="jsonBuilder_object_appendKey" />
+        <block type="jsonBuilder_object_appendKeyValue" />
+        <block type="jsonBuilder_object_setBuilder" />
+
+        <sep gap="48" />
+
+        <block type="jsonBuilder_current" />
+    </category>
     <category name="Map" colour="#FF661A">
         <block type="map_create" />
         <block type="map_set" />
@@ -132,7 +149,7 @@
         <block type="set_delete" />
         <block type="set_clear" />
     </category>
-    <sep></sep>
+    <sep />
     <category name="Blocks" colour="#FF6680"> 
         <block type="blocks_create" />
         <block type="blocks_createobject" />
@@ -190,7 +207,7 @@
         <sep gap="48" />
         <block type="debug_catch" />
     </category>
-    <sep></sep>
+    <sep />
     <category name="Scratch VM" colour="#FF8F05">
         <block type="ScratchVM_mousedown" />
         <block type="ScratchVM_username" />

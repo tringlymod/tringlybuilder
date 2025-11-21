@@ -8,7 +8,6 @@ export default defineConfig({
 	},
 	build: {
 		sourcemap: true,
-		watch: true,
 	},
 	preview: {
 		port: 8008,

@@ -138,24 +138,45 @@ class Compiler {
 	compile(workspace, extensionMetadata, imageStates) {
 		const code = javascriptGenerator.workspaceToCode(workspace);
 
+		/**
+		 * @type {string[]}
+		 */
 		const headerCode = [
 			`// id: ${extensionMetadata.id}`,
 			`// name: ${extensionMetadata.name}`,
 			`// description: ${extensionMetadata.description}`,
-			`// by: ${extensionMetadata.by}`,
-			`// original: ${extensionMetadata.original}`,
-			`// license: ${extensionMetadata.license}`,
-			`/*`,
-			`   This extension was made with TurboBuilder!`,
-			`   ${location.origin}`,
-			`*/`,
-			`(async function (Scratch) {`,
-			`const variables = {};`,
-			`const blocks = [];`,
-			`const menus = {};`,
-			``,
-			start,
 		];
+		if (extensionMetadata.by.name) {
+			headerCode.push(
+				`// by: ${extensionMetadata.by.name} ${
+					extensionMetadata.by.url ? `<${extensionMetadata.by.url}>` : ``
+				}`
+			);
+		}
+		if (extensionMetadata.original.name) {
+			headerCode.push(
+				`// original: ${extensionMetadata.original.name} ${
+					extensionMetadata.original.url
+						? `<${extensionMetadata.original.url}>`
+						: ``
+				}`
+			);
+		}
+		headerCode.push(
+			...[
+				`// license: ${extensionMetadata.license}`,
+				`/*`,
+				`   This extension was made with TringlyBuilder!`,
+				`   ${location.origin}`,
+				`*/`,
+				`(async function () {`,
+				`const variables = {};`,
+				`const blocks = [];`,
+				`const menus = {};`,
+				``,
+				start,
+			]
+		);
 		const classRegistry = {
 			top: [`class Extension {`],
 			extensionInfo: {},
@@ -163,7 +184,7 @@ class Compiler {
 		};
 		const footerCode = [
 			`Scratch.extensions.register(new Extension());`,
-			`})(Scratch);`,
+			`})();`,
 		];
 
 		if (imageStates) {
